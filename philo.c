@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/15 17:48:55 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/08/15 18:29:26 by abdellah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ int mail = 0;
 
 void	*rotune(void *data)
 {
-	t_table *table = (t_table *)data;
-	while (table->eat_num > 0)
+	t_philo *philo = (t_philo *)data;
+	while (philo->table->eat_num > 0)
 	{
-		eat(table);
-		ft_sleep(table);
-		ft_think(table);
-		table->eat_num --;
+		eat(philo);
+		ft_sleep(philo);
+		ft_think(philo);
+		philo->table->eat_num --;
 	}
 	return (NULL);
 }
@@ -58,20 +58,18 @@ size_t ft_gettime()
 
 void philo_born(t_table *table)
 {
-	struct s_philo *philo;
+	t_philo *philo;
 	int i;
 
 	i = 0;
-	philo = malloc(sizeof(philo) * table->number_of_philosophers);
-	table->ph = malloc(sizeof(pthread_t) * table->number_of_philosophers);
-	table->philo = philo;
-	
+	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
 	table->start_time = ft_gettime();
 	while (i < table->number_of_philosophers)
 	{
-		philo->id = i + 1;
-		pthread_create(&table->ph[i], NULL, &rotune, table);
-		pthread_join(table->ph[i], NULL);
+		philo[i].table = table;
+	;	philo[i].id = i + 1;
+		pthread_create(&philo[i].ph, NULL, &rotune, &philo[i]);
+		pthread_join(philo[i].ph, NULL);
 		i ++;
 	}
 }
