@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/12 21:43:21 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/08/15 17:48:55 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,19 @@ size_t ft_gettime()
 
 void philo_born(t_table *table)
 {
-	t_philo *philo;
+	struct s_philo *philo;
 	int i;
 
 	i = 0;
-	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
+	philo = malloc(sizeof(philo) * table->number_of_philosophers);
+	table->ph = malloc(sizeof(pthread_t) * table->number_of_philosophers);
 	table->philo = philo;
 	
 	table->start_time = ft_gettime();
 	while (i < table->number_of_philosophers)
 	{
-		table->philo->id = i + 1;
-		pthread_create(table->ph[i], NULL, &rotune, table);
+		philo->id = i + 1;
+		pthread_create(&table->ph[i], NULL, &rotune, table);
 		pthread_join(table->ph[i], NULL);
 		i ++;
 	}
