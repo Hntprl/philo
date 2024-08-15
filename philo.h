@@ -6,7 +6,7 @@
 /*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:05 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/15 18:27:18 by abdellah         ###   ########.fr       */
+/*   Updated: 2024/08/15 18:40:48 by abdellah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ struct s_philo
 	pthread_mutex_t *l_fork;
 	pthread_mutex_t	*r_fork;
 	t_table			*table;
+	int				eat_num;
 	int				id;
 };
 

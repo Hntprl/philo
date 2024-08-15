@@ -6,7 +6,7 @@
 /*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/15 18:29:26 by abdellah         ###   ########.fr       */
+/*   Updated: 2024/08/15 18:42:30 by abdellah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,11 @@ int mail = 0;
 void	*rotune(void *data)
 {
 	t_philo *philo = (t_philo *)data;
-	while (philo->table->eat_num > 0)
+	while (philo->table->eat_num > philo->eat_num)
 	{
 		eat(philo);
 		ft_sleep(philo);
 		ft_think(philo);
-		philo->table->eat_num --;
 	}
 	return (NULL);
 }
@@ -67,7 +66,8 @@ void philo_born(t_table *table)
 	while (i < table->number_of_philosophers)
 	{
 		philo[i].table = table;
-	;	philo[i].id = i + 1;
+		philo[i].id = i + 1;
+		philo[i].eat_num = 0;
 		pthread_create(&philo[i].ph, NULL, &rotune, &philo[i]);
 		pthread_join(philo[i].ph, NULL);
 		i ++;
