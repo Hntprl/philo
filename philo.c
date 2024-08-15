@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/10 23:29:23 by abdellah         ###   ########.fr       */
+/*   Updated: 2024/08/12 21:43:21 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,76 +35,77 @@ int mail = 0;
 	}
  }
 
-void eat(t_philo *ph)
+void	*rotune(void *data)
 {
-	int i = 0;
-	printf("Philosopher %d is eating\n", 1);
-	while (i < ph->table->eat_num)
+	t_table *table = (t_table *)data;
+	while (table->eat_num > 0)
 	{
-		i++;
+		eat(table);
+		ft_sleep(table);
+		ft_think(table);
+		table->eat_num --;
 	}
-}
-
-void ft_sleep(t_philo *ph)
-{
-	int i = 0;
-	printf("Philosopher %d is sleeping\n", 1);
-	while (i < ph->table->time_to_sleep)
-	{
-		i++;
-	}
-}
-
-void ft_think(t_philo *ph)
-{
-	(void)ph;
-	printf("Philosopher %d is thinking\n", 1);
-}
-
-void	*rotune(void *th)
-{
-	t_philo *ph = (t_philo*)th;
-	eat(ph);
-	ft_sleep(ph);
-	ft_think(ph);
 	return (NULL);
 }
 
-void philo_born(t_philo *philo)
+size_t ft_gettime()
 {
-	philo->ph = malloc(sizeof(pthread_t));
-	pthread_create(philo->ph, NULL, &rotune, philo);
-	pthread_join(*(philo->ph), NULL);
+	struct timeval timeval;
+
+	gettimeofday(&timeval, NULL);
+	return ((timeval.tv_sec * 1000) + (timeval.tv_usec / 1000));
 }
 
- void philo_table(char **av)
- {
-	t_table *table;
-	t_philo philo;
+void philo_born(t_table *table)
+{
+	t_philo *philo;
+	int i;
 
-	table = malloc(sizeof(table));
-	philo.table = table;
+	i = 0;
+	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
+	table->philo = philo;
+	
+	table->start_time = ft_gettime();
+	while (i < table->number_of_philosophers)
+	{
+		table->philo->id = i + 1;
+		pthread_create(table->ph[i], NULL, &rotune, table);
+		pthread_join(table->ph[i], NULL);
+		i ++;
+	}
+}
+
+ void philo_table(t_table *table, char **av, int ac)
+ {
 	table->number_of_philosophers = atoi(av[1]);
 	table->time_to_die = atoi(av[2]);
 	table->time_to_eat = atoi(av[3]);
 	table->time_to_sleep = atoi(av[4]);
-	table->eat_num = atoi(av[5]);
+	if (ac == 5)
+		table->eat_num = -1;
+	else
+		table->eat_num = atoi(av[5]);
 	if (table->number_of_philosophers > 200)
 		(write(1, "Wrong input: Wrong Number!\n", 28), exit(1));
 	if (table->number_of_philosophers <= 0 || table->time_to_die <= 0
-	|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
+	|| table->time_to_sleep <= 0)
 		(write(1, "Wrong input: Wrong Number!\n", 28), exit(1));
-	philo_born(&philo);
+	philo_born(table);
  }
 
 int main (int ac, char **av)
 {
-	if (ac == 6)
+	t_table *table;
+
+	table = malloc(sizeof(t_table));
+	if (!table)
+		return (exit(1), write(1, "malloc: error\n", 15), 1);
+	if (ac == 6 || ac == 5)
 	{
 		philo_parser(av);
-		philo_table(av);
+		philo_table(table, av, ac);
 	}
 	else
-		(write(1, "Wrong input: Need 6 or 5 args\n", 31), exit(1));
+		(free(table), write(1, "Wrong input: Need 6 or 5 args\n", 31), exit(1));
 	return (0);
 }

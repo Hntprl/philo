@@ -4,8 +4,9 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pthread
 RM = rm -f
 
-SRCS = philo.c \
+SRCS =	philo.c \
 		utils.c \
+		actions.c \
 
 OBJS = $(SRCS:.c=.o)
 
