@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/15 18:42:30 by abdellah         ###   ########.fr       */
+/*   Updated: 2024/08/19 22:32:45 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,18 @@ size_t ft_gettime()
 	return ((timeval.tv_sec * 1000) + (timeval.tv_usec / 1000));
 }
 
+void	mutex_init(t_table *table)
+{
+	int i;
+
+	i = 0;
+	while (i < table->number_of_philosophers)
+	{
+		pthread_mutex_init(&table->forks[i], NULL);
+		i ++;
+	}
+}
+
 void philo_born(t_table *table)
 {
 	t_philo *philo;
@@ -62,12 +74,14 @@ void philo_born(t_table *table)
 
 	i = 0;
 	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
+	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philosophers);
 	table->start_time = ft_gettime();
 	while (i < table->number_of_philosophers)
 	{
 		philo[i].table = table;
 		philo[i].id = i + 1;
 		philo[i].eat_num = 0;
+		mutex_init(table);
 		pthread_create(&philo[i].ph, NULL, &rotune, &philo[i]);
 		pthread_join(philo[i].ph, NULL);
 		i ++;

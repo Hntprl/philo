@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:05 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/15 18:40:48 by abdellah         ###   ########.fr       */
+/*   Updated: 2024/08/19 22:27:07 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ typedef struct s_table
 	int			time_to_eat;
 	int			time_to_sleep;
 	int			eat_num;
+	pthread_mutex_t *forks;
+	pthread_mutex_t *eat_mutex;
 	// struct s_philo		*philo;
 }			t_table;
 
