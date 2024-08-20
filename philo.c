@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/19 22:32:45 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/08/20 20:42:54 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,14 @@ void philo_born(t_table *table)
 	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philosophers);
 	table->start_time = ft_gettime();
+	mutex_init(table);
+	pthread_mutex_init(&table->eat_mutex, NULL);
 	while (i < table->number_of_philosophers)
 	{
 		philo[i].table = table;
 		philo[i].id = i + 1;
 		philo[i].eat_num = 0;
-		mutex_init(table);
-		pthread_create(&philo[i].ph, NULL, &rotune, &philo[i]);
+		pthread_create(&philo[i].ph, NULL, rotune, &philo[i]);
 		pthread_join(philo[i].ph, NULL);
 		i ++;
 	}
