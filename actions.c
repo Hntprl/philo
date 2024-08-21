@@ -15,20 +15,22 @@
 
 void eat(t_philo *philo)
 {
+	if (philo->id % 2 == 0)
+		usleep(7000);
     size_t i = ft_gettime() - philo->table->start_time;
 	philo->l_fork = &philo->table->forks[philo->id + 1];
-	// pthread_mutex_lock(philo->l_fork);
+	pthread_mutex_lock(philo->l_fork);
 	printf("%ld %d has taken a fork\n",i , philo->id);
 	philo->r_fork = &philo->table->forks[philo->id % philo->table->number_of_philosophers];
-	// pthread_mutex_lock(philo->r_fork);
+	pthread_mutex_lock(philo->r_fork);
 	printf("%ld %d has taken a fork\n",i , philo->id);
-	// pthread_mutex_lock(&philo->table->eat_mutex);
+	pthread_mutex_lock(&philo->table->eat_mutex);
 	printf("%ld %d is eating\n",i , philo->id);
 	usleep(philo->table->time_to_eat * 1000);
 	philo->eat_num += 1;
-	// pthread_mutex_unlock(&philo->table->eat_mutex);
-	// pthread_mutex_unlock(philo->l_fork);
-	// pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(&philo->table->eat_mutex);
+	pthread_mutex_unlock(philo->l_fork);
+	pthread_mutex_unlock(philo->r_fork);
 }
 
 void ft_sleep(t_philo *philo)

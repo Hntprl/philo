@@ -84,6 +84,11 @@ void philo_born(t_table *table)
 		philo[i].id = i + 1;
 		philo[i].eat_num = 0;
 		pthread_create(&philo[i].ph, NULL, rotune, &philo[i]);
+		i ++;
+	}
+	i = 0;
+	while (i < table->number_of_philosophers)
+	{
 		pthread_join(philo[i].ph, NULL);
 		i ++;
 	}
