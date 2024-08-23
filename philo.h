@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:05 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/20 01:06:54 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/08/23 10:54:05 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct s_philo t_philo;
 
 typedef struct s_table
 {
+	int			death;
 	size_t		start_time;
 	int			number_of_philosophers;
 	int			time_to_die;
@@ -41,6 +42,7 @@ struct s_philo
 	t_table			*table;
 	int				eat_num;
 	int				id;
+	size_t			eat_start;
 };
 
 int		ft_isdigit(int c);
