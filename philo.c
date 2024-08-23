@@ -65,26 +65,26 @@ void	mutex_init(t_table *table)
 	}
 }
 
-// void	*monitor (void *data)
-// {
-// 	t_table	*table = (t_table *)data;
+void	*monitor (void *data)
+{
+	t_table	*table = (t_table *)data;
 
-// 	table->death = 0;
-// 	while (1)
-// 	{
-// 		if (table->death != 0)
-// 		{
-// 			printf("mat mskin\n");
-// 			exit(1);
-// 		}
-// 	}
-// 	return (NULL);
-// }
+	table->death = 0;
+	while (1)
+	{
+		if (table->death != 0)
+		{
+			printf("mat mskin\n");
+			exit(1);
+		}
+	}
+	return (NULL);
+}
 
 void philo_born(t_table *table)
 {
 	t_philo *philo;
-	// pthread_t mntr;
+	pthread_t mntr;
 	int i;
 
 	i = 0;
@@ -93,7 +93,7 @@ void philo_born(t_table *table)
 	table->start_time = ft_gettime();
 	mutex_init(table);
 	pthread_mutex_init(&table->eat_mutex, NULL);
-	// pthread_create(&mntr, NULL, monitor, table);
+	pthread_create(&mntr, NULL, monitor, table);
 	while (i < table->number_of_philosophers)
 	{
 		philo[i].table = table;
@@ -101,7 +101,7 @@ void philo_born(t_table *table)
 		philo[i].eat_num = 0;
 		philo[i].eat_start = ft_gettime();
 		philo[i].l_fork = &philo->table->forks[i];
-		philo[i].r_fork = &philo->table->forks[philo->id % philo->table->number_of_philosophers];
+		philo[i].r_fork = &philo->table->forks[(i + 1) % philo->table->number_of_philosophers];
 		pthread_create(&philo[i].ph, NULL, rotune, &philo[i]);
 		i ++;
 	}
@@ -111,7 +111,6 @@ void philo_born(t_table *table)
 		pthread_join(philo[i].ph, NULL);
 		i ++;
 	}
-	// pthread_join(mntr, NULL);
 }
 
  void philo_table(t_table *table, char **av, int ac)
