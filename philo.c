@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/23 11:01:45 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/08/24 11:41:18 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,13 @@ void	*monitor (void *data)
 {
 	t_table	*table = (t_table *)data;
 
-	table->death = 0;
+	// table->death = 0;
 	while (1)
 	{
 		if (table->death != 0)
 		{
-			printf("mat mskin\n");
-			exit(1);
+			ft_printstate("died\n", );
+			break;
 		}
 	}
 	return (NULL);
@@ -88,6 +88,7 @@ void philo_born(t_table *table)
 	int i;
 
 	i = 0;
+	table->death = 0;
 	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philosophers);
 	table->start_time = ft_gettime();
@@ -99,7 +100,7 @@ void philo_born(t_table *table)
 		philo[i].table = table;
 		philo[i].id = i + 1;
 		philo[i].eat_num = 0;
-		philo[i].eat_start = ft_gettime();
+		philo[i].last_meal = ft_gettime();
 		philo[i].l_fork = &philo->table->forks[i];
 		philo[i].r_fork = &philo->table->forks[(i + 1) % philo->table->number_of_philosophers];
 		pthread_create(&philo[i].ph, NULL, rotune, &philo[i]);

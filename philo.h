@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:05 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/23 10:54:05 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/08/24 11:43:43 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ struct s_philo
 	t_table			*table;
 	int				eat_num;
 	int				id;
-	size_t			eat_start;
+	size_t			last_meal;
 };
 
 int		ft_isdigit(int c);
@@ -51,4 +51,5 @@ void	eat(t_philo *philo);
 void	ft_sleep(t_philo *philo);
 void	ft_think(t_philo *philo);
 size_t	ft_gettime();
+void	ft_printstate(char *str, int id, size_t start_time);
 #endif
