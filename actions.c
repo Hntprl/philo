@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/11 21:51:46 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/24 11:37:34 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/08/26 15:58:29 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,15 @@ void eat(t_philo *philo)
 	int	death_count;
 	
 	if (philo->id % 2 == 0)
-		usleep(700 * 1000);
-	pthread_mutex_lock(philo->r_fork);
-	death_count = philo->last_meal - ft_gettime();
+		usleep(700);
+	pthread_mutex_lock(&philo->table->eat_mutex);
+	death_count = ft_gettime() - philo->last_meal;
 	if (death_count > philo->table->time_to_die)
 		philo->table->death = 1;
-    size_t i = ft_gettime() - philo->table->start_time;
-	philo->last_meal = i;
+    // size_t i = ft_gettime() - philo->table->start_time;
+	pthread_mutex_unlock(&philo->table->eat_mutex);
+	pthread_mutex_lock(philo->r_fork);
+	philo->last_meal = ft_gettime();
 	ft_printstate("has taken a fork\n", philo->id, philo->table->start_time);
 	pthread_mutex_lock(philo->l_fork);
 	ft_printstate("has taken a fork\n", philo->id, philo->table->start_time);
