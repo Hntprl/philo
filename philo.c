@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/24 18:44:50 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/13 21:40:08 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,10 @@
 void	*rotune(void *data)
 {
 	t_philo *philo = (t_philo *)data;
-	while (philo->table->eat_num > philo->eat_num)
+	while (1)
 	{
+		if (philo->table->eat_num != -1 && philo->table->eat_num == philo->eat_num)
+			return (NULL);
 		eat(philo);
 		ft_sleep(philo);
 		ft_think(philo);
@@ -63,21 +65,34 @@ void	mutex_init(t_table *table)
 		pthread_mutex_init(&table->forks[i], NULL);
 		i ++;
 	}
+	pthread_mutex_init(&table->print, NULL);
+	pthread_mutex_init(&table->death_mutex, NULL);
 }
 
 void	*monitor (void *data)
 {
-	t_table	*table = (t_table *)data;
-
-	table->death = 0;
+	int	ext;
+	int death_count;
+	int i;
+	t_philo	*philo = (t_philo *)data;
+	ext = 1;
 	while (1)
 	{
-		if (table->death != 0)
+		i = 0;
+		while (i < philo->table->number_of_philosophers)
 		{
-			// ft_printstate("died\n", );
-			printf("died\n");
-			exit(1);
+			pthread_mutex_lock(&philo[i].table->death_mutex);
+			death_count = ft_gettime() - philo->last_meal;
+			if (death_count > philo[i].table->time_to_die)
+			{
+				ft_printstate("died\n", &philo[i]);
+				ext = 0;
+				break;
+			}
+			pthread_mutex_unlock(&philo[i].table->death_mutex);
 		}
+		if (ext == 0)
+			break;
 	}
 	return (NULL);
 }
@@ -92,27 +107,23 @@ void philo_born(t_table *table)
 	table->death = 0;
 	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philosophers);
-	table->start_time = ft_gettime();
 	mutex_init(table);
 	pthread_mutex_init(&table->eat_mutex, NULL);
-	pthread_create(&mntr, NULL, monitor, table);
+	pthread_create(&mntr, NULL, monitor, philo);
 	while (i < table->number_of_philosophers)
 	{
 		philo[i].table = table;
 		philo[i].id = i + 1;
 		philo[i].eat_num = 0;
-		philo[i].last_meal = 0;
 		philo[i].l_fork = &philo->table->forks[i];
 		philo[i].r_fork = &philo->table->forks[(i + 1) % philo->table->number_of_philosophers];
+		philo[i].start_time = ft_gettime();
+		philo[i].last_meal = philo[i].start_time;
 		pthread_create(&philo[i].ph, NULL, rotune, &philo[i]);
+		pthread_detach(philo[i].ph);
 		i ++;
 	}
-	i = 0;
-	while (i < table->number_of_philosophers)
-	{
-		pthread_join(philo[i].ph, NULL);
-		i ++;
-	}
+	pthread_join(mntr, NULL);
 }
 
  void philo_table(t_table *table, char **av, int ac)

@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:05:43 by amarouf           #+#    #+#             */
-/*   Updated: 2024/07/27 21:06:57 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/13 21:33:21 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,23 @@ int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (1);
+	return (0);
+}
+
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	unsigned char	*c1;
+	unsigned char	*c2;
+
+	c1 = (unsigned char *)s1;
+	c2 = (unsigned char *)s2;
+	while (n > 0)
+	{
+		if (*c1 != *c2)
+			return (*c1 - *c2);
+		n --;
+		c1 ++;
+		c2 ++;
+	}
 	return (0);
 }

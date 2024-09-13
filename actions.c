@@ -6,36 +6,33 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/11 21:51:46 by amarouf           #+#    #+#             */
-/*   Updated: 2024/08/26 15:58:29 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/13 21:33:44 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_printstate(char *str, int id, size_t start_time)
+void	ft_printstate(char *str, t_philo *philo)
 {
-	size_t i = ft_gettime() - start_time;
-	printf("%ld %d %s", i, id, str);
+	pthread_mutex_lock(&philo->table->print);
+	size_t i = ft_gettime() - philo->start_time;
+	printf("%ld %d %s", i, philo->id, str);
+	if (ft_memcmp("died", str, 4))
+		pthread_mutex_unlock(&philo->table->print);
 }
 
 void eat(t_philo *philo)
 {
-	int	death_count;
-	
 	if (philo->id % 2 == 0)
 		usleep(700);
 	pthread_mutex_lock(&philo->table->eat_mutex);
-	death_count = ft_gettime() - philo->last_meal;
-	if (death_count > philo->table->time_to_die)
-		philo->table->death = 1;
-    // size_t i = ft_gettime() - philo->table->start_time;
 	pthread_mutex_unlock(&philo->table->eat_mutex);
 	pthread_mutex_lock(philo->r_fork);
 	philo->last_meal = ft_gettime();
-	ft_printstate("has taken a fork\n", philo->id, philo->table->start_time);
+	ft_printstate("has taken a fork\n", philo);
 	pthread_mutex_lock(philo->l_fork);
-	ft_printstate("has taken a fork\n", philo->id, philo->table->start_time);
-	ft_printstate("is eating\n", philo->id, philo->table->start_time);
+	ft_printstate("has taken a fork\n", philo);
+	ft_printstate("is eating\n", philo);
 	usleep(philo->table->time_to_eat * 1000);
 	philo->eat_num += 1;
 	pthread_mutex_unlock(philo->l_fork);
@@ -44,12 +41,12 @@ void eat(t_philo *philo)
 
 void ft_sleep(t_philo *philo)
 {
-	ft_printstate("is sleeping\n", philo->id, philo->table->start_time);
+	ft_printstate("is sleeping\n", philo);
 	usleep(philo->table->time_to_sleep * 1000);
 }
 
 void ft_think(t_philo *philo)
 {
-	ft_printstate("is thinking\n", philo->id, philo->table->start_time);
+	ft_printstate("is thinking\n", philo);
 	usleep(700);
 }
