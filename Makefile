@@ -13,7 +13,7 @@ OBJS = $(SRCS:.c=.o)
 all:$(NAME)
 
 $(NAME):$(OBJS)
-		$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -fsanitize=address
+		$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -fsanitize=thread
 
 clean:
 	$(RM) $(OBJS)

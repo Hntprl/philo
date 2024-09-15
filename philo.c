@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/13 21:40:08 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/15 20:23:53 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	mutex_init(t_table *table)
 	}
 	pthread_mutex_init(&table->print, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
+	pthread_mutex_init(&table->eat_mutex, NULL);
 }
 
 void	*monitor (void *data)
@@ -82,14 +83,20 @@ void	*monitor (void *data)
 		while (i < philo->table->number_of_philosophers)
 		{
 			pthread_mutex_lock(&philo[i].table->death_mutex);
-			death_count = ft_gettime() - philo->last_meal;
-			if (death_count > philo[i].table->time_to_die)
+			death_count = ft_gettime() - philo[i].last_meal;
+			if (death_count >= philo[i].table->time_to_die)
 			{
 				ft_printstate("died\n", &philo[i]);
 				ext = 0;
 				break;
 			}
+			if (philo->eat_num == philo->table->eat_num)
+			{
+				ext = 0;
+				break;
+			}
 			pthread_mutex_unlock(&philo[i].table->death_mutex);
+			i ++;
 		}
 		if (ext == 0)
 			break;
@@ -97,19 +104,11 @@ void	*monitor (void *data)
 	return (NULL);
 }
 
-void philo_born(t_table *table)
+void philo_init(t_philo *philo, t_table *table)
 {
-	t_philo *philo;
-	pthread_t mntr;
 	int i;
 
 	i = 0;
-	table->death = 0;
-	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
-	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philosophers);
-	mutex_init(table);
-	pthread_mutex_init(&table->eat_mutex, NULL);
-	pthread_create(&mntr, NULL, monitor, philo);
 	while (i < table->number_of_philosophers)
 	{
 		philo[i].table = table;
@@ -119,14 +118,35 @@ void philo_born(t_table *table)
 		philo[i].r_fork = &philo->table->forks[(i + 1) % philo->table->number_of_philosophers];
 		philo[i].start_time = ft_gettime();
 		philo[i].last_meal = philo[i].start_time;
+		i ++;
+	}
+}
+
+int philo_born(t_table *table)
+{
+	t_philo *philo;
+	pthread_t mntr;
+	int i;
+
+	i = 0;
+	philo = malloc(sizeof(t_philo) * table->number_of_philosophers);
+	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philosophers);
+	if (!philo || !table->forks)
+		return (1);
+	mutex_init(table);
+	philo_init(philo, table);
+	pthread_create(&mntr, NULL, monitor, philo);
+	while (i < table->number_of_philosophers)
+	{
 		pthread_create(&philo[i].ph, NULL, rotune, &philo[i]);
 		pthread_detach(philo[i].ph);
 		i ++;
 	}
 	pthread_join(mntr, NULL);
+	return (0);
 }
 
- void philo_table(t_table *table, char **av, int ac)
+ int philo_table(t_table *table, char **av, int ac)
  {
 	table->number_of_philosophers = atoi(av[1]);
 	table->time_to_die = atoi(av[2]);
@@ -137,11 +157,13 @@ void philo_born(t_table *table)
 	else
 		table->eat_num = atoi(av[5]);
 	if (table->number_of_philosophers > 200)
-		(write(1, "Wrong input: Wrong Number!\n", 28), exit(1));
+		return (write(1, "Wrong input: Wrong Number!\n", 28), 1);
 	if (table->number_of_philosophers <= 0 || table->time_to_die <= 0
 	|| table->time_to_sleep <= 0)
-		(write(1, "Wrong input: Wrong Number!\n", 28), exit(1));
-	philo_born(table);
+		return (write(1, "Wrong input: Wrong Number!\n", 28), 1);
+	if (philo_born(table) == 1)
+		return (1);
+	return (0);
  }
 
 int main (int ac, char **av)
@@ -150,13 +172,14 @@ int main (int ac, char **av)
 
 	table = malloc(sizeof(t_table));
 	if (!table)
-		return (exit(1), write(1, "malloc: error\n", 15), 1);
+		return (write(1, "malloc: error\n", 15), 1);
 	if (ac == 6 || ac == 5)
 	{
 		philo_parser(av);
-		philo_table(table, av, ac);
+		if (philo_table(table, av, ac) == 1)
+			return (1);
 	}
 	else
-		(free(table), write(1, "Wrong input: Need 6 or 5 args\n", 31), exit(1));
+		return (free(table), write(1, "Wrong input: Need 6 or 5 args\n", 31), 1);
 	return (0);
 }
