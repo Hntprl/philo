@@ -5,15 +5,16 @@ CFLAGS = -Wall -Wextra -Werror -pthread
 RM = rm -f
 
 SRCS =	philo.c \
-		utils.c \
+		utils.c  \
 		actions.c \
+		monitor.c  \
 
 OBJS = $(SRCS:.c=.o)
 
 all:$(NAME)
 
 $(NAME):$(OBJS)
-		$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -fsanitize=thread
+		$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -fsanitize=address
 
 clean:
 	$(RM) $(OBJS)
