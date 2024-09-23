@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:05:43 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/18 06:14:09 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/19 01:55:20 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,28 @@ int	ft_memcmp(const void *s1, const void *s2, size_t n)
 		n --;
 		c1 ++;
 		c2 ++;
+	}
+	return (0);
+}
+
+int	philo_parser(char **av)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (av[i])
+	{
+		j = 0;
+		if (!av[i][j])
+			return (write(1, "Wrong input!\n", 13), 1);
+		while (av[i][j])
+		{
+			if (!ft_isdigit(av[i][j]))
+				return (write(1, "Wrong input!\n", 13), 1);
+			j ++;
+		}
+		i ++;
 	}
 	return (0);
 }

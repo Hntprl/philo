@@ -6,11 +6,33 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/11 21:51:46 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/18 06:04:13 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/23 08:56:15 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	*rotune(void *data)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	while (1)
+	{
+		pthread_mutex_lock(&philo->table->eat_mutex);
+		if (philo->table->eat_num != -1
+			&& philo->table->eat_num == philo->eat_num)
+		{
+			philo->table->eat += 1;
+			return (pthread_mutex_unlock(&philo->table->eat_mutex), NULL);
+		}
+		pthread_mutex_unlock(&philo->table->eat_mutex);
+		pthread_mutex_unlock(&philo->table->eat_mutex);
+		eat(philo);
+		ft_sleep_think(philo);
+	}
+	return (NULL);
+}
 
 void	ft_printstate(char *str, t_philo *philo)
 {
@@ -28,9 +50,9 @@ void	eat(t_philo *philo)
 	if (philo->id % 2 == 0)
 		usleep(700);
 	pthread_mutex_lock(philo->r_fork);
-	ft_printstate("has taken a rfork\n", philo);
+	ft_printstate("has taken a fork\n", philo);
 	pthread_mutex_lock(philo->l_fork);
-	ft_printstate("has taken a lfork\n", philo);
+	ft_printstate("has taken a fork\n", philo);
 	ft_printstate("is eating\n", philo);
 	pthread_mutex_lock(&philo->table->eat_mutex);
 	philo->eat_num += 1;

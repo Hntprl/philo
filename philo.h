@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:05 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/18 21:12:58 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/23 08:20:23 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 typedef struct s_table
 {
+	int				eat;
 	int				philo_num;
 	int				time_to_die;
 	int				time_to_eat;
@@ -51,6 +52,7 @@ size_t	ft_gettime(void);
 void	ft_printstate(char *str, t_philo *philo);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 void	*rotune(void *data);
-void	mutex_init(t_table *table);
+int		mutex_init(t_table *table);
 void	*monitor(void *data);
+int		philo_parser(char **av);
 #endif
