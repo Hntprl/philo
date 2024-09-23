@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/11 21:51:46 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/23 08:56:15 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/23 09:39:42 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ void	*rotune(void *data)
 		if (philo->table->eat_num != -1
 			&& philo->table->eat_num == philo->eat_num)
 		{
-			philo->table->eat += 1;
+			if (philo->table->eat_num != -1)
+				philo->table->eat += 1;
 			return (pthread_mutex_unlock(&philo->table->eat_mutex), NULL);
 		}
 		pthread_mutex_unlock(&philo->table->eat_mutex);

@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 05:49:53 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/23 08:31:28 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/23 10:13:29 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,15 @@ void	*monitor(void *data)
 			death_count = ft_gettime() - philo[i].last_meal;
 			pthread_mutex_unlock(&philo->table->death_mutex);
 			if (death_count >= philo[i].table->time_to_die)
-				return (ft_printstate("died\n", &philo[i]), NULL);
+			{
+				if (philo->table->eat_num != -1)
+				{
+					if (philo[i].eat_num < philo[i].table->eat_num)				
+						return (ft_printstate("died\n", &philo[i]), NULL);
+				}
+				else
+					return (ft_printstate("died\n", &philo[i]), NULL);
+			}
 			pthread_mutex_lock(&philo->table->eat_mutex);
 			if (philo->table->eat == philo->table->philo_num)
 				return (pthread_mutex_unlock(&philo->table->eat_mutex), NULL);
