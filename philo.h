@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:05 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/23 08:20:23 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/24 11:11:53 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_philo
 }	t_philo;
 
 int		ft_isdigit(int c);
-int		ft_atoi(const char *str);
+int		ft_atoi(char *str);
 void	eat(t_philo *philo);
 void	ft_sleep_think(t_philo *philo);
 size_t	ft_gettime(void);

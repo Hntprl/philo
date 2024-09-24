@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/23 08:23:54 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/23 22:13:01 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,19 @@ int	philo_born(t_table *table)
 
 int	philo_table(t_table *table, char **av, int ac)
 {
-	table->philo_num = atoi(av[1]);
-	table->time_to_die = atoi(av[2]);
-	table->time_to_eat = atoi(av[3]);
-	table->time_to_sleep = atoi(av[4]);
+	table->philo_num = ft_atoi(av[1]);
+	table->time_to_die = ft_atoi(av[2]);
+	table->time_to_eat = ft_atoi(av[3]);
+	table->time_to_sleep = ft_atoi(av[4]);
 	table->eat = 0;
 	if (ac == 5)
 		table->eat_num = -1;
 	else
-		table->eat_num = atoi(av[5]);
+		table->eat_num = ft_atoi(av[5]);
+	if (table->philo_num == -1337 || table->time_to_die == -1337
+		|| table->time_to_eat == -1337 || table->time_to_sleep == -1337
+		|| table->eat_num == -1337)
+		return (write(1, "Wrong input!\n", 13), 1);
 	if (table->philo_num > 200)
 		return (write(1, "Wrong input!\n", 13), 1);
 	if (table->philo_num <= 0 || table->time_to_die <= 0

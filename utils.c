@@ -6,17 +6,36 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:05:43 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/19 01:55:20 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/09/23 22:21:54 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <limits.h>
 
-int	ft_atoi(const char *str)
+size_t	ft_strlen(char *str)
 {
-	int	i;
-	int	s;
-	int	a;
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+		i ++;
+	return (i);
+}
+
+int	check_overflow(char *str, long long nbr)
+{
+	if (ft_strlen(str) > 19 || nbr > 2147483647)
+		return (-1337);
+	else
+		return ((int)nbr);
+}
+
+int	ft_atoi(char *str)
+{
+	int			i;
+	int			s;
+	long long	a;
 
 	s = 1;
 	i = 0;
@@ -34,7 +53,7 @@ int	ft_atoi(const char *str)
 		a = (str[i] - '0') + (a * 10);
 		i ++;
 	}
-	return (a * s);
+	return (check_overflow(str, a * s));
 }
 
 int	ft_isdigit(int c)
@@ -50,44 +69,4 @@ size_t	ft_gettime(void)
 
 	gettimeofday(&timeval, NULL);
 	return ((timeval.tv_sec * 1000) + (timeval.tv_usec / 1000));
-}
-
-int	ft_memcmp(const void *s1, const void *s2, size_t n)
-{
-	unsigned char	*c1;
-	unsigned char	*c2;
-
-	c1 = (unsigned char *)s1;
-	c2 = (unsigned char *)s2;
-	while (n > 0)
-	{
-		if (*c1 != *c2)
-			return (*c1 - *c2);
-		n --;
-		c1 ++;
-		c2 ++;
-	}
-	return (0);
-}
-
-int	philo_parser(char **av)
-{
-	int	i;
-	int	j;
-
-	i = 1;
-	while (av[i])
-	{
-		j = 0;
-		if (!av[i][j])
-			return (write(1, "Wrong input!\n", 13), 1);
-		while (av[i][j])
-		{
-			if (!ft_isdigit(av[i][j]))
-				return (write(1, "Wrong input!\n", 13), 1);
-			j ++;
-		}
-		i ++;
-	}
-	return (0);
 }
