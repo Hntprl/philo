@@ -6,7 +6,7 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 00:47:01 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/23 22:13:01 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/10/09 21:22:39 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void	philo_init(t_philo *philo, t_table *table)
 		philo[i].table = table;
 		philo[i].id = i + 1;
 		philo[i].eat_num = 0;
-		philo[i].r_fork = &philo->table->forks[i];
-		philo[i].l_fork = &philo->table->forks[(i + 1) % table->philo_num];
+		philo[i].l_fork = &philo->table->forks[i];
+		philo[i].r_fork = &philo->table->forks[(i + 1) % table->philo_num];
 		philo[i].start_time = ft_gettime();
 		philo[i].last_meal = philo[i].start_time;
 		i ++;

@@ -6,11 +6,22 @@
 /*   By: amarouf <amarouf@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 05:49:53 by amarouf           #+#    #+#             */
-/*   Updated: 2024/09/23 22:21:48 by amarouf          ###   ########.fr       */
+/*   Updated: 2024/10/08 19:53:36 by amarouf          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	ft_printstate(char *str, t_philo *philo)
+{
+	size_t	i;
+
+	pthread_mutex_lock(&philo->table->print);
+	i = ft_gettime() - philo->start_time;
+	printf("%ld %d %s", i, philo->id, str);
+	if (ft_memcmp("died", str, 4))
+		pthread_mutex_unlock(&philo->table->print);
+}
 
 int	philo_parser(char **av)
 {

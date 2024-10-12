@@ -44,6 +44,7 @@ typedef struct s_philo
 	size_t			last_meal;
 }	t_philo;
 
+void	ft_usleep(size_t time);
 int		ft_isdigit(int c);
 int		ft_atoi(char *str);
 void	eat(t_philo *philo);
